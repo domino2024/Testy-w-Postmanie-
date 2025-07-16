@@ -1,0 +1,73 @@
+// Test 1: Status kod to 200
+pm.test("Test 1: Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// Test 2: Odpowiedź ma ciało JSON
+pm.test("Test 2: Odpowiedź ma ciało JSON", function () {
+    pm.response.to.be.withBody;
+    pm.response.to.be.json;
+});
+
+// Test 3: Lista zdjęć nie jest pusta
+pm.test("Test 3: Lista zdjęć nie jest pusta", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData.length).to.be.above(0);
+});
+
+// Test 4: Pierwszy element ma 'albumId'
+pm.test("Test 4: Pierwszy element ma 'albumId'", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData[0]).to.have.property("albumId");
+});
+
+// Test 5: Pierwszy element ma 'id'
+pm.test("Test 5: Pierwszy element ma 'id'", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData[0]).to.have.property("id");
+});
+
+// Test 6: Wszystkie ID są unikalne
+pm.test("Test 6: Wszystkie ID są unikalne", function () {
+    const jsonData = pm.response.json();
+    const ids = jsonData.map(item => item.id);
+    const uniqueIds = new Set(ids);
+    pm.expect(uniqueIds.size).to.eql(ids.length);
+});
+
+// Test 7: Wszystkie URL mają poprawny format
+pm.test("Test 7: Wszystkie URL mają poprawny format", function () {
+    const jsonData = pm.response.json();
+    jsonData.forEach(item => {
+        pm.expect(item.url).to.match(/^https?:\/\/.+/);
+        pm.expect(item.thumbnailUrl).to.match(/^https?:\/\/.+/);
+    });
+});
+
+// Test 8: Wszystkie tytuły są niepuste
+pm.test("Test 8: Wszystkie tytuły są niepuste", function () {
+    const jsonData = pm.response.json();
+    jsonData.forEach(item => {
+        pm.expect(item.title).to.be.a("string").and.not.empty;
+    });
+});
+
+// Test 9: Każdy obiekt zawiera dokładnie 5 pól
+pm.test("Test 9: Każdy obiekt zawiera dokładnie 5 pól", function () {
+    const jsonData = pm.response.json();
+    jsonData.forEach(item => {
+        pm.expect(Object.keys(item).length).to.eql(5);
+    });
+});
+
+// Test 10: Pierwszy obiekt ma poprawne typy danych
+pm.test("Test 10: Pierwszy obiekt ma poprawne typy danych", function () {
+    const item = pm.response.json()[0];
+    pm.expect(item.albumId).to.be.a("number");
+    pm.expect(item.id).to.be.a("number");
+    pm.expect(item.title).to.be.a("string");
+    pm.expect(item.url).to.be.a("string");
+    pm.expect(item.thumbnailUrl).to.be.a("string");
+});
+
+
